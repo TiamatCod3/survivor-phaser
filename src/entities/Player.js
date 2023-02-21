@@ -17,8 +17,8 @@ export default class Player extends Phaser.Physics.Matter.Sprite{
     }
 
     static preload(scene) {
-        scene.load.atlas('female','src/assets/images/female.png','src/assets/images/female_atlas.json');
-        scene.load.animation('female_anim', 'src/assets/images/female_anim.json')
+        scene.load.atlas('female','./src/assets/images/female.png','./src/assets/images/female_atlas.json');
+        scene.load.animation('female_anim', './src/assets/images/female_anim.json')
     }
 
     get velocity() {
