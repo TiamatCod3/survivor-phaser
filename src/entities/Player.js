@@ -1,6 +1,6 @@
-export default class Player extends Phaser.Physics.Matter.Sprite{
-    constructor(data){
-        let {scene, x, y, texture, frame} = data;
+export default class Player extends Phaser.Physics.Matter.Sprite {
+    constructor(data) {
+        let { scene, x, y, texture, frame } = data;
         super(scene, x, y, texture, frame);
         this.scene.add.existing(this);
 
@@ -18,9 +18,9 @@ export default class Player extends Phaser.Physics.Matter.Sprite{
         this.touching = []
 
 
-        const {Body, Bodies} = Phaser.Physics.Matter.Matter;
-        let playerCollider = Bodies.circle(this.x, this.y, 12,{isSensor: false, labe: 'playerCollider'})
-        let playerSensor = Bodies.circle(this.x, this.y, 24,{isSensor: true, labe: 'playerCollider'})
+        const { Body, Bodies } = Phaser.Physics.Matter.Matter;
+        let playerCollider = Bodies.circle(this.x, this.y, 12, { isSensor: false, labe: 'playerCollider' })
+        let playerSensor = Bodies.circle(this.x, this.y, 24, { isSensor: true, labe: 'playerCollider' })
 
         const compoundBody = Body.create({
             parts: [playerCollider, playerSensor],
@@ -33,13 +33,13 @@ export default class Player extends Phaser.Physics.Matter.Sprite{
     }
 
     static preload(scene) {
-        scene.load.atlas('female','./src/assets/images/female.png','./src/assets/images/female_atlas.json');
+        scene.load.atlas('female', './src/assets/images/female.png', './src/assets/images/female_atlas.json');
         scene.load.animation('female_anim', './src/assets/images/female_anim.json')
         let spritesheet = scene.load.spritesheet(
-            'items', 
+            'items',
             './src/assets/images/items.png',
             {
-                frameWidth: 32, 
+                frameWidth: 32,
                 frameHeight: 32
             }
         )
@@ -48,30 +48,30 @@ export default class Player extends Phaser.Physics.Matter.Sprite{
     get velocity() {
         return this.body.velocity
     }
-    
 
-    update(){
+
+    update() {
         const speed = 2.5;
         let playerVelocity = new Phaser.Math.Vector2();
-        
-        if(this.inputKeys.left.isDown) {
+
+        if (this.inputKeys.left.isDown) {
             playerVelocity.x = -speed;
-        }else if(this.inputKeys.right.isDown) {
+        } else if (this.inputKeys.right.isDown) {
             playerVelocity.x = speed;
         }
 
-        if(this.inputKeys.up.isDown) {
+        if (this.inputKeys.up.isDown) {
             playerVelocity.y = -speed;
-        }else if(this.inputKeys.down.isDown) {
+        } else if (this.inputKeys.down.isDown) {
             playerVelocity.y = speed;
         }
-        
+
         playerVelocity.normalize();
         playerVelocity.scale(speed);
         this.setVelocity(playerVelocity.x, playerVelocity.y);
-        if(Math.abs(this.velocity.x) > 0.1 || Math.abs(this.velocity.y) > 0.1){
+        if (Math.abs(this.velocity.x) > 0.1 || Math.abs(this.velocity.y) > 0.1) {
             this.anims.play('female_walk', true);
-        }else{
+        } else {
             this.anims.play('female_idle', true);
         }
 
@@ -79,29 +79,30 @@ export default class Player extends Phaser.Physics.Matter.Sprite{
         this.weaponRotate();
     }
 
-    weaponRotate(){
+    weaponRotate() {
         let pointer = this.scene.input.activePointer
-        if(pointer.isDown){
-            this.weaponRotation += 6
-        }else{
-            this.weaponRotation = 0
+        if (pointer.isDown) {
+            this.weaponRotation += 6;
+        } else {
+            this.weaponRotation = 0;
         }
-        if(this.weaponRotation>100){
-            this.weaponRotation = 0
+        if (this.weaponRotation > 100) {
+            this.whackStuff();
+            this.weaponRotation = 0;
         }
-        if(this.flipX){
+        if (this.flipX) {
             this.spriteWeapon.setAngle(-this.weaponRotation - 90);
-        }else{
+        } else {
             this.spriteWeapon.setAngle(this.weaponRotation);
         }
     }
 
-    
-    CreateMiningCollisions(playerSensor){
+
+    CreateMiningCollisions(playerSensor) {
         this.scene.matterCollision.addOnCollideStart({
             objectA: [playerSensor],
-            callback: other =>{
-                if(other.bodyB.isSensor) return;
+            callback: other => {
+                if (other.bodyB.isSensor) return;
                 this.touching.push(other.gameObjectB);
                 console.log(this.touching.length, other.gameObjectB.name)
             },
@@ -110,10 +111,18 @@ export default class Player extends Phaser.Physics.Matter.Sprite{
 
         this.scene.matterCollision.addOnCollideEnd({
             objectA: [playerSensor],
-            callback: other =>{
+            callback: other => {
                 this.touching = this.touching.filter(gameObject => gameObject != other.gameObjectB)
                 console.log(this.touching.length)
             },
         })
+    }
+
+    whackStuff(){
+        this.touching = this.touching.filter(gameObject => gameObject.hit && !gameObject.dead);
+        this.touching.forEach(gameObject =>{
+            gameObject.hit();
+            if(gameObject.dead) gameObject.destroy();
+        });
     }
 }
