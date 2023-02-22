@@ -1,5 +1,5 @@
-import PhaserMatterCollisionPlugin from "phaser-matter-collision-plugin";
 import Phaser from "phaser";
+import PhaserMatterCollisionPlugin from "phaser-matter-collision-plugin";
 import MainScene from "./src/MainScene";
 
 const config = {
@@ -23,13 +23,12 @@ const config = {
   plugins: {
     scene: [
       {
-        key: "MatterCollisionPlugin",
+        key: 'matterCollision',
         plugin: PhaserMatterCollisionPlugin,
-        mapping: "matterCollisionPlugin",
-        start: true
+        mapping: 'matterCollision',
+        start: true,
       }
     ]
   }
 }
-
-new Phaser.Game(config)
+const game = new Phaser.Game(config)

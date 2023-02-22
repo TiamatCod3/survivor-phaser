@@ -9,7 +9,7 @@ export default class Resources extends Phaser.Physics.Matter.Sprite{
         let itemType = resource.properties.find(p => p.name === 'Type').value;
         super(scene.matter.world, resource.x, resource.y, 'resources', itemType)
         this.scene.add.existing(this);
-
+        this.name = itemType;
         let yOrigin = resource.properties.find(p => p.name === 'yOrigin').value;
         this.x += this.width / 2;
         this.y -= this.height / 2;
