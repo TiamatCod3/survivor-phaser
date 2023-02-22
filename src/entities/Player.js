@@ -1,9 +1,10 @@
-export default class Player extends Phaser.Physics.Matter.Sprite {
-    constructor(data) {
-        let { scene, x, y, texture, frame } = data;
-        super(scene, x, y, texture, frame);
-        this.scene.add.existing(this);
+import MatterEntity from "./MatterEntity";
 
+export default class Player extends MatterEntity {
+    constructor(data) {
+        console.log(data)
+        // let { scene, x, y, texture, frame } = data;
+        super({...data, health: 2, drops:[], name: 'player'});
         //Weapon
         this.spriteWeapon = new Phaser.GameObjects.Sprite(
             this.scene,
@@ -31,6 +32,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
         this.CreateMiningCollisions(playerSensor);
         this.createPickupCollision(playerCollider);
         this.scene.input.on('pointermove', pointer => this.setFlipX(pointer.worldX < this.x));
+
     }
 
     static preload(scene) {
@@ -44,11 +46,12 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
                 frameHeight: 32
             }
         )
+        scene.load.audio('player','src/assets/audio/player.mp3');
     }
 
-    get velocity() {
-        return this.body.velocity
-    }
+    // get velocity() {
+    //     return this.body.velocity
+    // }
 
 
     update() {
@@ -72,6 +75,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
         this.setVelocity(playerVelocity.x, playerVelocity.y);
         if (Math.abs(this.velocity.x) > 0.1 || Math.abs(this.velocity.y) > 0.1) {
             this.anims.play('female_walk', true);
+            console.log(this.sound)
         } else {
             this.anims.play('female_idle', true);
         }
@@ -105,7 +109,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
             callback: other => {
                 if (other.bodyB.isSensor) return;
                 this.touching.push(other.gameObjectB);
-                console.log(this.touching.length, other.gameObjectB.name)
+                // console.log(this.touching.length, other.gameObjectB.name)
             },
             context: this.scene,
         })
@@ -114,7 +118,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
             objectA: [playerSensor],
             callback: other => {
                 this.touching = this.touching.filter(gameObject => gameObject != other.gameObjectB)
-                console.log(this.touching.length)
+                // console.log(this.touching.length)
             },
         })
     }

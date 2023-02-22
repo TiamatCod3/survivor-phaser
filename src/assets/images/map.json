@@ -733,39 +733,6 @@
                  "class":"tree",
                  "gid":21,
                  "height":32,
-                 "id":31,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"Type",
-                         "type":"string",
-                         "value":"tree"
-                        }, 
-                        {
-                         "name":"depth",
-                         "type":"int",
-                         "value":2
-                        }, 
-                        {
-                         "name":"drops",
-                         "type":"string",
-                         "value":"[272,272]"
-                        }, 
-                        {
-                         "name":"yOrigin",
-                         "type":"float",
-                         "value":0.8
-                        }],
-                 "rotation":0,
-                 "visible":true,
-                 "width":32,
-                 "x":416,
-                 "y":160
-                }, 
-                {
-                 "class":"tree",
-                 "gid":21,
-                 "height":32,
                  "id":32,
                  "name":"",
                  "properties":[
