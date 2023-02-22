@@ -3,7 +3,7 @@ import MatterEntity from "./MatterEntity";
 export default class Player extends MatterEntity {
     constructor(data) {
         // let { scene, x, y, texture, frame } = data;
-        super({...data, health: 2, drops:[], name: 'player'});
+        super({...data, health: 20, drops:[], name: 'player'});
         //Weapon
         this.spriteWeapon = new Phaser.GameObjects.Sprite(
             this.scene,
@@ -32,7 +32,6 @@ export default class Player extends MatterEntity {
         this.createPickupCollision(playerCollider);
         // this.scene.input.on('pointermove', pointer => this.setFlipX(pointer.worldX < this.x));
         this.scene.input.on('pointermove',pointer => { if(!this.dead) this.setFlipX(pointer.worldX < this.x)});
-
     }
 
     static preload(scene) {
