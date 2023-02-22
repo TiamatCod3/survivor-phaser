@@ -30,7 +30,8 @@ export default class Player extends MatterEntity {
         this.setFixedRotation();
         this.CreateMiningCollisions(playerSensor);
         this.createPickupCollision(playerCollider);
-        this.scene.input.on('pointermove', pointer => this.setFlipX(pointer.worldX < this.x));
+        // this.scene.input.on('pointermove', pointer => this.setFlipX(pointer.worldX < this.x));
+        this.scene.input.on('pointermove',pointer => { if(!this.dead) this.setFlipX(pointer.worldX < this.x)});
 
     }
 
@@ -48,12 +49,15 @@ export default class Player extends MatterEntity {
         scene.load.audio('player','src/assets/audio/player.mp3');
     }
 
-    // get velocity() {
-    //     return this.body.velocity
-    // }
-
+    onDeath = () => {
+        this.anims.stop();
+        this.setTexture('items',0);
+        this.setOrigin(0.5);
+        this.spriteWeapon.destroy();
+    }
 
     update() {
+        if(this.dead) return;
         const speed = 2.5;
         let playerVelocity = new Phaser.Math.Vector2();
 
@@ -107,7 +111,7 @@ export default class Player extends MatterEntity {
             callback: other => {
                 if (other.bodyB.isSensor) return;
                 this.touching.push(other.gameObjectB);
-                // console.log(this.touching.length, other.gameObjectB.name)
+                console.log(this.touching.length, other.gameObjectB.name)
             },
             context: this.scene,
         })
@@ -116,7 +120,7 @@ export default class Player extends MatterEntity {
             objectA: [playerSensor],
             callback: other => {
                 this.touching = this.touching.filter(gameObject => gameObject != other.gameObjectB)
-                // console.log(this.touching.length)
+                console.log(this.touching.length)
             },
         })
     }

@@ -11,7 +11,7 @@ export default class MatterEntity extends Phaser.Physics.Matter.Sprite{
         this.name =name;
         this.health = health;
         this.drops = drops;
-        this._position = Phaser.Math.Vector2(this.x, this.y);
+        this._position = new Phaser.Math.Vector2(this.x,this.y);
         if(this.name) this.sound = this.scene.sound.add(this.name);
         this.scene.add.existing(this);
     }
@@ -34,7 +34,9 @@ export default class MatterEntity extends Phaser.Physics.Matter.Sprite{
     hit = () =>{
         if(this.sound) this.sound.play();
         this.health--;
+        console.log(`Hitting:${this.name} Health:${this.health}`);
         if(this.dead){
+            this.onDeath();
             this.drops.forEach(drop => new DropItem(
                 {
                     scene: this.scene, 
