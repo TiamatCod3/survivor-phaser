@@ -24,7 +24,7 @@ const config = {
     scene: [
       {
         key: "MatterCollisionPlugin",
-        plugin: PhaserMatterCollisionPlugin,
+        plugin: PhaserMatterCollisionPlugin.default,
         mapping: "matterCollisionPlugin",
         start: true
       }

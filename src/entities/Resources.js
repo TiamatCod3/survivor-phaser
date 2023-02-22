@@ -1,6 +1,6 @@
 import MatterEntity from "./MatterEntity";
 
-export default class Resources extends MatterEntity {
+export default class Resources extends Phaser.Physics.Matter.Sprite {
 
     static preload(scene) {
         scene.load.atlas('resources', "./src/assets/images/resources.png", "./src/assets/images/resources_atlas.json");
@@ -12,14 +12,14 @@ export default class Resources extends MatterEntity {
 
     constructor(data) {
         let { scene, resource } = data;
-        console.log(resource)
+        console.log(scene)
         let itemType = resource.properties.find(p => p.name === 'Type').value;
-        // super(scene.matter.world, resource.x, resource.y, 'resources', itemType)
+        super(scene.matter.world, resource.x, resource.y, 'resources', itemType)
         let drops = JSON.parse(resource.properties.find(p => p.name == 'drops').value)
         console.log(drops)
         let depth = resource.properties.find(p => p.name === 'depth').value
-        super({ scene, x: resource.x, y: resource.y, texture: 'resources', 
-                frame: itemType, drops, depth, health: 5, name: itemType });   
+        // super({ scene: scene, x: resource.x, y: resource.y, texture: 'resources', 
+        //         frame: itemType, drops, depth, health: 5, name: itemType });   
         let yOrigin = resource.properties.find(p => p.name === 'yOrigin').value;
         this.name = itemType;
         this.health = 5;

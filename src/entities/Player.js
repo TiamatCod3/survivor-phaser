@@ -1,4 +1,5 @@
 import MatterEntity from "./MatterEntity";
+import PhaserMatterCollisionPlugin from "phaser-matter-collision-plugin";
 
 export default class Player extends MatterEntity {
     constructor(data) {
@@ -9,7 +10,7 @@ export default class Player extends MatterEntity {
 
         //Weapon
         this.spriteWeapon = new Phaser.GameObjects.Sprite(this.scene, 0, 0, 'items', 162);
-        this.spriteWeapon.setScale(0.5);
+        this.spriteWeapon.setScale(0.8);
         this.spriteWeapon.setOrigin(0.25, 0.75);
         this.scene.add.existing(this.spriteWeapon);
 
@@ -26,6 +27,7 @@ export default class Player extends MatterEntity {
         this.CreatePickupCollision(playerCollider);
 
         this.scene.input.on('pointermove', pointer => this.setFlipX(pointer.worldX < this.x));
+        console.log(this.x, this.y)
     }
 
     static preload(scene) {
@@ -73,11 +75,12 @@ export default class Player extends MatterEntity {
 
     weaponRotate(){
         let pointer = this.scene.input.activePointer;
-        if(pointer.isDown()){
-            this.weaponRotation = 6;
+        if(pointer.isDown){
+            this.weaponRotation += 6;
         }else{
             this.weaponRotation = 0;
         }
+        console.log(this.weaponRotation)
         if(this.weaponRotation > 100){
             this.whackStuff();
             this.weaponRotation = 0;
@@ -85,49 +88,52 @@ export default class Player extends MatterEntity {
 
         if(this.flipX){
             this.spriteWeapon.setAngle(-this.weaponRotation - 90);
+            console.log(this.spriteWeapon.angle)
         }else{
             this.spriteWeapon.setAngle(this.weaponRotation);
+            console.log(this.spriteWeapon.angle)
         }
-
-        this.spriteWeapon.setAngle(this.weaponRotation);
     }
 
     CreatingMiningCollisions(playerSensor){
-        this.scene.matterCollision.addOnCollideStart({
-            objectA: [playerSensor],
-            callback: other => {
-                if(other.bodyB.isSensor) return;
-                this.touching.push(other.GameObjectB);
-                console.log(this.touching.length, other.gameObjectB.name);             
-            },
-            context: this.scene,
-        })
+        this.scene.matter.onColideStart({
 
-        this.scene.matterCollision.addOnCollideEnd({
-            objectA: [playerSensor],
-            callback: other => {
-                this.touching.filter(gameObject => gameObject != other.gameObjectB);
-                console.log(this.touching.length);
-            }
         })
+        // this.scene.matter.addOnCollideStart({
+        //     objectA: [playerSensor],
+        //     callback: other => {
+        //         if(other.bodyB.isSensor) return;
+        //         this.touching.push(other.GameObjectB);
+        //         console.log(this.touching.length, other.gameObjectB.name);             
+        //     },
+        //     context: this.scene,
+        // })
+
+        // this.matterCollision.addOnCollideEnd({
+        //     objectA: [playerSensor],
+        //     callback: other => {
+        //         this.touching.filter(gameObject => gameObject != other.gameObjectB);
+        //         console.log(this.touching.length);
+        //     }
+        // })
 
     }
 
     CreatePickupCollision(playerCollider){
-        this.scene.matterCollision.addOnCollideStart({
-            objectA: [playerCollider],
-            callback: other => {
-                if(other.gameObjectB && other.gameObjectB.pickup) other.gameObjectB.pickup();           
-            },
-            context: this.scene,
-        })
+        // this.scene.matterCollision.addOnCollideStart({
+        //     objectA: [playerCollider],
+        //     callback: other => {
+        //         if(other.gameObjectB && other.gameObjectB.pickup) other.gameObjectB.pickup();           
+        //     },
+        //     context: this.scene,
+        // })
 
-        this.scene.matterCollision.addOnCollideActive({
-            objectA: [playerCollider],
-            ccallback: other => {
-                if(other.gameObjectB && other.gameObjectB.pickup) other.gameObjectB.pickup();           
-            },
-        })
+        // this.scene.matterCollision.addOnCollideActive({
+        //     objectA: [playerCollider],
+        //     ccallback: other => {
+        //         if(other.gameObjectB && other.gameObjectB.pickup) other.gameObjectB.pickup();           
+        //     },
+        // })
     }
 
     whackStuff(){
