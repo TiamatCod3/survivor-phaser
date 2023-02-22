@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import Player from "./entities/Player";
-import Resources from "./Resources";
+import Resources from "./entities/Resources";
 
 export default class MainScene extends Phaser.Scene {
     constructor() {
@@ -12,7 +12,7 @@ export default class MainScene extends Phaser.Scene {
         Resources.preload(this);
         this.load.image('tiles', './src/assets/images/RPG Nature Tileset.png');
         this.load.tilemapTiledJSON('map', './src/assets/images/map.json');
-        
+                
     }
 
     create() {

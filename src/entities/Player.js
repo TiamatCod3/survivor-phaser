@@ -3,6 +3,8 @@ export default class Player extends Phaser.Physics.Matter.Sprite{
         let {scene, x, y, texture, frame} = data;
         super(scene, x, y, texture, frame);
         this.scene.add.existing(this);
+
+        //Weapon
         
         const {Body, Bodies} = Phaser.Physics.Matter.Matter;
         let playerCollider = Bodies.circle(this.x, this.y, 12,{isSensor: false, labe: 'playerCollider'})
@@ -19,6 +21,14 @@ export default class Player extends Phaser.Physics.Matter.Sprite{
     static preload(scene) {
         scene.load.atlas('female','./src/assets/images/female.png','./src/assets/images/female_atlas.json');
         scene.load.animation('female_anim', './src/assets/images/female_anim.json')
+        scene.load.spritesheet(
+            'items', 
+            './src/assets/images/items.png',
+            {
+                frameWidth: 32, 
+                frameHeight: 32
+            }
+        )
     }
 
     get velocity() {
