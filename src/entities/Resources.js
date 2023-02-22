@@ -1,24 +1,38 @@
-export default class Resources extends Phaser.Physics.Matter.Sprite{
+import MatterEntity from "./MatterEntity";
 
-    static preload(scene){
+export default class Resources extends MatterEntity {
+
+    static preload(scene) {
         scene.load.atlas('resources', "./src/assets/images/resources.png", "./src/assets/images/resources_atlas.json");
+        scene.load.audio('tree', "./src/assets/sounds/tree.wav");
+        scene.load.audio('bush', "./src/assets/sounds/bush.wav");
+        scene.load.audio('rock', "./src/assets/sounds/rock.wav");
+        scene.load.audio('pickup', "./src/assets/sounds/pickup.ogg");
     }
 
-    constructor(data){
-        let {scene, resource} = data;
+    constructor(data) {
+        let { scene, resource } = data;
+        console.log(resource)
         let itemType = resource.properties.find(p => p.name === 'Type').value;
-        super(scene.matter.world, resource.x, resource.y, 'resources', itemType)
-        this.scene.add.existing(this);
-
+        // super(scene.matter.world, resource.x, resource.y, 'resources', itemType)
+        let drops = JSON.parse(resource.properties.find(p => p.name == 'drops').value)
+        console.log(drops)
+        let depth = resource.properties.find(p => p.name === 'depth').value
+        super({ scene, x: resource.x, y: resource.y, texture: 'resources', 
+                frame: itemType, drops, depth, health: 5, name: itemType });   
         let yOrigin = resource.properties.find(p => p.name === 'yOrigin').value;
-        this.x += this.width / 2;
-        this.y -= this.height / 2;
+        this.name = itemType;
+        this.health = 5;
+        this.sound = this.scene.sound.add(this.name);
+
         this.y = this.y + this.height * (yOrigin - 0.5);
 
-        const { Body, Bodies } = Phaser.Physics.Matter.Matter
+        const { Bodies } = Phaser.Physics.Matter.Matter
         let circleCollider = Bodies.circle(resource.x, resource.y, 12, { isSensor: false, label: 'collider' });
         this.setExistingBody(circleCollider)
         this.setStatic(true)
         this.setOrigin(0.5, yOrigin)
     }
+
+    
 }
