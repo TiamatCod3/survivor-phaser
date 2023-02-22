@@ -1,6 +1,6 @@
 import MatterEntity from "./MatterEntity";
 
-export default class Resources extends MatterEntity{
+export default class Resource extends MatterEntity{
 
     static preload(scene){
         scene.load.atlas('resources', "./src/assets/images/resources.png", "./src/assets/images/resources_atlas.json");

@@ -2,7 +2,6 @@ import MatterEntity from "./MatterEntity";
 
 export default class Player extends MatterEntity {
     constructor(data) {
-        console.log(data)
         // let { scene, x, y, texture, frame } = data;
         super({...data, health: 2, drops:[], name: 'player'});
         //Weapon
@@ -75,7 +74,6 @@ export default class Player extends MatterEntity {
         this.setVelocity(playerVelocity.x, playerVelocity.y);
         if (Math.abs(this.velocity.x) > 0.1 || Math.abs(this.velocity.y) > 0.1) {
             this.anims.play('female_walk', true);
-            console.log(this.sound)
         } else {
             this.anims.play('female_idle', true);
         }

@@ -1,15 +1,18 @@
 import Phaser from "phaser";
 import Player from "./entities/Player";
-import Resources from "./entities/Resources";
+import Resource from "./entities/Resource";
+import Enemy from "./entities/Enemy";
 
 export default class MainScene extends Phaser.Scene {
     constructor() {
         super("MainsScene")
+        this.enemies = []
     }
 
     preload() {
         Player.preload(this);
-        Resources.preload(this);
+        Enemy.preload(this);
+        Resource.preload(this);
         this.load.image('tiles', './src/assets/images/RPG Nature Tileset.png');
         this.load.tilemapTiledJSON('map', './src/assets/images/map.json');        
     }
@@ -24,7 +27,11 @@ export default class MainScene extends Phaser.Scene {
         this.matter.world.convertTilemapLayer(layer1);
 
         this.map.getObjectLayer('Resources').objects.forEach(resource => {
-            let resourceItem = new Resources({scene: this, resource});
+            new Resource({scene: this, resource});
+        })
+
+        this.map.getObjectLayer('Enemies').objects.forEach(enemy => {
+            this.enemies.push(new Enemy({scene: this, enemy}))
         })
 
         this.player = new Player({scene: this, x: 200, y: 200, texture: 'female', frame: 'townsfolk_f_idle_1' });
@@ -38,6 +45,7 @@ export default class MainScene extends Phaser.Scene {
     }
 
     update() {
+        this.enemies.forEach(enemy=>enemy.update())
         this.player.update();
     }
 }
