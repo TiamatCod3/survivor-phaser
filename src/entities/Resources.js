@@ -1,3 +1,5 @@
+import DropItem from "./DropItem";
+
 export default class Resources extends Phaser.Physics.Matter.Sprite{
 
     static preload(scene){
@@ -5,6 +7,7 @@ export default class Resources extends Phaser.Physics.Matter.Sprite{
         scene.load.audio('tree', "./src/assets/audio/tree.mp3");
         scene.load.audio('rock', "./src/assets/audio/rock.mp3");
         scene.load.audio('bush', "./src/assets/audio/bush.mp3");
+        scene.load.audio('pickup', "./src/assets/audio/pickup.mp3");
     }
 
     constructor(data){
@@ -16,6 +19,7 @@ export default class Resources extends Phaser.Physics.Matter.Sprite{
         this.health = 5;
         this.sound = this.scene.sound.add(this.name);
         let yOrigin = resource.properties.find(p => p.name === 'yOrigin').value;
+        this.drops = JSON.parse(resource.properties.find(p => p.name === 'drops').value);
         this.x += this.width / 2;
         this.y -= this.height / 2;
         this.y = this.y + this.height * (yOrigin - 0.5);
@@ -35,6 +39,15 @@ export default class Resources extends Phaser.Physics.Matter.Sprite{
         if(this.sound) this.sound.play();
         this.health--;
         console.log(`Hiting ${this.name} Health: ${this.health}`);
-
+        if(this.dead){
+            this.drops.forEach(drop => new DropItem(
+                {
+                    scene: this.scene, 
+                    x: this.x,
+                    y: this.y,
+                    frame: drop
+                }
+            ))
+        }
     }
 }
