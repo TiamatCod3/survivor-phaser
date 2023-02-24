@@ -16,8 +16,8 @@ export default class Player extends MatterEntity {
         this.spriteWeapon.setOrigin(0.25, 0.75)
         this.scene.add.existing(this.spriteWeapon)
         this.touching = []
-
-
+        this.pointer = this.scene.input.activePointer
+        
         const { Body, Bodies } = Phaser.Physics.Matter.Matter;
         let playerCollider = Bodies.circle(this.x, this.y, 12, { isSensor: false, labe: 'playerCollider' })
         let playerSensor = Bodies.circle(this.x, this.y, 24, { isSensor: true, labe: 'playerCollider' })
@@ -31,7 +31,9 @@ export default class Player extends MatterEntity {
         this.CreateMiningCollisions(playerSensor);
         this.createPickupCollision(playerCollider);
         // this.scene.input.on('pointermove', pointer => this.setFlipX(pointer.worldX < this.x));
-        this.scene.input.on('pointermove',pointer => { if(!this.dead) this.setFlipX(pointer.worldX < this.x)});
+        this.scene.input.on('pointermove', pointer => { 
+            if(!this.dead) this.setFlipX(pointer.worldX < this.x)
+        });
     }
 
     static preload(scene) {
@@ -59,16 +61,15 @@ export default class Player extends MatterEntity {
         if(this.dead) return;
         const speed = 2.5;
         let playerVelocity = new Phaser.Math.Vector2();
-
-        if (this.inputKeys.left.isDown) {
+        if (this.inputKeys.left.isDown || (this.pointer.isDown && this.pointer.downX <= this.x)) {
             playerVelocity.x = -speed;
-        } else if (this.inputKeys.right.isDown) {
+        } else if (this.inputKeys.right.isDown || (this.pointer.isDown && this.pointer.downX > this.x)) {
             playerVelocity.x = speed;
         }
 
-        if (this.inputKeys.up.isDown) {
+        if (this.inputKeys.up.isDown || (this.pointer.isDown && this.pointer.downY <= this.y)) {
             playerVelocity.y = -speed;
-        } else if (this.inputKeys.down.isDown) {
+        } else if (this.inputKeys.down.isDown ||(this.pointer.isDown && this.pointer.downY > this.y)) {
             playerVelocity.y = speed;
         }
 
@@ -86,8 +87,8 @@ export default class Player extends MatterEntity {
     }
 
     weaponRotate() {
-        let pointer = this.scene.input.activePointer
-        if (pointer.isDown) {
+        if (this.pointer.isDown) {
+            console.log(this.pointer)
             this.weaponRotation += 6;
         } else {
             this.weaponRotation = 0;

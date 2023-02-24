@@ -7,6 +7,7 @@ export default class MainScene extends Phaser.Scene {
     constructor() {
         super("MainsScene")
         this.enemies = []
+        
     }
 
     preload() {
@@ -18,6 +19,7 @@ export default class MainScene extends Phaser.Scene {
     }
 
     create() {
+        this.input.addPointer();
         const map = this.make.tilemap({ key: 'map' });
         this.map = map;
         const tileset = map.addTilesetImage('RPG Nature Tileset', 'tiles', 32, 32, 0, 0);
@@ -43,7 +45,7 @@ export default class MainScene extends Phaser.Scene {
             right: Phaser.Input.Keyboard.KeyCodes.D
         });
         let camera = this.cameras.main;
-        camera.zoom = 2
+        camera.zoom = 1
         camera.startFollow(this.player);
         camera.setLerp(0.1,0.1);
         camera.setBounds(0,0,this.game.config.width, this.game.config.height);
@@ -52,5 +54,9 @@ export default class MainScene extends Phaser.Scene {
     update() {
         this.enemies.forEach(enemy=>enemy.update())
         this.player.update();
+    }
+
+    render(){
+        this.debug.pointer(this.input.pointer1);
     }
 }
